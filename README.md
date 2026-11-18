@@ -1,6 +1,6 @@
 # Drag-and-Drop Question POC
 
-A small proof of concept for answering an image-based drag-and-drop question. The page shows a background image with empty boxes on the left and a list of answer options on the right. You fill the boxes by dragging options onto them or by clicking.
+A small proof of concept for answering an image-based drag-and-drop question. The page shows a background image with empty boxes and a list of answer options. You fill the boxes by dragging options onto them or by clicking.
 
 It only covers the answering side. There is no editor, marking, or saving.
 
@@ -12,6 +12,13 @@ npm run dev
 ```
 
 Open the URL Vite prints (default `http://localhost:5173/`).
+
+## Layout
+
+A toggle at the top switches between two layouts:
+
+- **Side by side** (default): the image is on the left and the option list is on the right. The list takes at most 30% of the width, and options shrink to fit while keeping their aspect ratio. The image also shrinks on narrow screens.
+- **Top down**: the option list sits below the image and wraps into rows.
 
 ## Interactions
 

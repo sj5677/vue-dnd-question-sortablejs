@@ -2,11 +2,17 @@
   <main>
     <h3>{{ question.title }}</h3>
     <p>
-      Match the empty boxes in the image with the options on the right by selecting the empty box
-      and the correct option, or drag an option onto a box.
+      Match the empty boxes in the image with the options by selecting the empty box and the
+      correct option, or drag an option onto a box.
     </p>
 
-    <div class="layout">
+    <p class="layout-toggle">
+      Layout:
+      <label><input v-model="layout" type="radio" value="side" /> Side by side</label>
+      <label><input v-model="layout" type="radio" value="stack" /> Top down</label>
+    </p>
+
+    <div class="layout" :class="layout">
       <div class="stage">
         <img :src="'/' + question.fileName" @load="onBgLoad" />
         <template v-if="bg">
@@ -34,7 +40,7 @@
           class="option"
           :class="{ selected: selected?.option === o.id, added: isAdded(o.id) }"
           :data-id="o.id"
-          :style="{ width: o.answer.width + 'px', height: o.answer.height + 'px' }"
+          :style="{ width: o.answer.width + 'px', aspectRatio: o.answer.width + ' / ' + o.answer.height }"
           @click="clickOption(o.id)"
         >
           <OptionBody :option="o" />
@@ -64,6 +70,7 @@ const answers = ref(
 );
 const selected = ref(null); // { option: id } | { zone: index }
 const bg = ref(null);
+const layout = ref("side"); // "side" | "stack"
 
 const onBgLoad = (e) => (bg.value = { w: e.target.naturalWidth, h: e.target.naturalHeight });
 const pct = (v, total) => `${(v / total) * 100}%`;
@@ -141,13 +148,20 @@ main {
   margin: 1rem auto;
   padding: 0 1rem;
 }
+.layout-toggle label {
+  margin-left: 0.75rem;
+}
 .layout {
   display: flex;
   gap: 1.5rem;
   align-items: flex-start;
 }
+.layout.stack {
+  flex-direction: column;
+}
 .stage {
   position: relative;
+  min-width: 0;
 }
 .stage > img {
   display: block;
@@ -181,6 +195,18 @@ main {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+/* Side by side: option list takes at most 30% of the width, options scale down to fit */
+.layout.side .pool {
+  flex: none;
+  max-width: 30%;
+}
+.layout.stack .pool {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.pool > .option {
+  max-width: 100%;
 }
 .option {
   display: flex;
